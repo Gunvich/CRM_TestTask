@@ -33,5 +33,24 @@ services:
     volumes:
       - mysql_data:/crm/lib/mysql
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: crm_phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: laravel
+      PMA_PASSWORD: laravel
+    depends_on:
+      - mysql
+
+  node:
+    image: node:20
+    container_name: crm_node
+    working_dir: /crm
+    volumes:
+      - ./src:/crm
+
 volumes:
   mysql_data:
