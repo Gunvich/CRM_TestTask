@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class TicketRequest extends FormRequest
 {
@@ -16,12 +18,24 @@ class TicketRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'regex:/^\+[1-9]\d{1,14}$/'],
-            'email' => ['nullable','email'],
+            'email' => ['nullable', 'email'],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string'],
-            'attachment' => ['nullable', 'file', 'max:10240'],
-            'attachment.*' => ['nullable', 'file', 'max:10240'] // 10 MB
+            'attachment' => ['nullable', 'array'],
+            'attachment.*' => ['file', 'max:10240'],
         ];
     }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        $test= 1;
+        // 422 Unprocessable Entity (стандарт для validation)
+        throw new HttpResponseException(response()->json([
+            'error' => 'validation_failed',
+            'message' => 'Validation failed',
+            'errors' => $validator->errors(),
+        ], 422));
+    }
+
 }
 

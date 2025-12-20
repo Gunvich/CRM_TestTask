@@ -11,7 +11,6 @@ class TicketController extends Controller
 {
     public function store(TicketRequest $data)
     {
-
         $customer = Customer::firstOrCreate(
             ['phone' => $data['phone']],
             ['name' => $data['name'], 'email' => $data['email']]
@@ -32,13 +31,11 @@ class TicketController extends Controller
                 $ticket->addMedia($file)->toMediaCollection('attachments', 'public');
             }
         }
-//        dd($data->hasFile('attachment'), $data->file('attachment'));
 
         return response()->json([
             'id' => $ticket->id,
             'status' => $ticket->status,
             'created_at' => $ticket->created_at,
-            'media' => $ticket->getMedia('attachments')->map(fn($m) => $m->getUrl()),
         ]);
     }
 }
