@@ -19,7 +19,8 @@ class TicketRequest extends FormRequest
             'email' => ['nullable','email'],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string'],
-            'files.*' => ['nullable', 'file', 'max:10240'] // 10 MB
+            'attachment' => ['nullable', 'file', 'max:10240'],
+            'attachment.*' => ['nullable', 'file', 'max:10240'] // 10 MB
         ];
     }
 }

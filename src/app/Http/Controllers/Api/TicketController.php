@@ -23,16 +23,22 @@ class TicketController extends Controller
         ]);
 
 
-        if ($data->hasFile('attachment')) {
-            foreach ($data->file('attachment') as $file) {
-                $ticket->addMedia($file)->toMediaCollection('attachments');
+        $attachments = $data->file('attachment');
+
+        if ($attachments) {
+            if (!is_array($attachments)) $attachments = [$attachments];
+
+            foreach ($attachments as $file) {
+                $ticket->addMedia($file)->toMediaCollection('attachments', 'public');
             }
         }
+//        dd($data->hasFile('attachment'), $data->file('attachment'));
 
         return response()->json([
             'id' => $ticket->id,
             'status' => $ticket->status,
             'created_at' => $ticket->created_at,
+            'media' => $ticket->getMedia('attachments')->map(fn($m) => $m->getUrl()),
         ]);
     }
 }
